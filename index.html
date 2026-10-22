@@ -1,0 +1,159 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Campus Energy Monitoring</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f1f5f9;
+      color: #172033;
+    }
+    header {
+      background: #12372a;
+      color: white;
+      padding: 28px 7%;
+    }
+    header h1 { margin: 0 0 8px; }
+    header p { margin: 0; color: #cce8d8; }
+    main { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+    .intro { margin-bottom: 22px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 22px;
+      box-shadow: 0 3px 12px #0000000d;
+      border-top: 4px solid #15966a;
+    }
+    .card h2 { margin-top: 0; font-size: 20px; }
+    .usage { font-size: 32px; font-weight: bold; margin: 15px 0; }
+    .muted { color: #64748b; }
+    .bar {
+      height: 10px;
+      background: #e2e8f0;
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 12px 0;
+    }
+    .fill { height: 100%; background: #16a34a; }
+    .warning {
+      background: #fff1f2;
+      color: #b91c1c;
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 16px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    .safe {
+      background: #ecfdf5;
+      color: #047857;
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 16px;
+      font-size: 14px;
+    }
+    .summary {
+      margin-top: 26px;
+      background: white;
+      border-radius: 14px;
+      padding: 22px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+    .summary strong { display: block; font-size: 25px; margin-top: 8px; }
+    footer { text-align: center; padding: 25px; color: #64748b; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Smart Campus Energy Monitoring</h1>
+    <p>Building-wise electricity usage and energy-saving targets</p>
+  </header>
+
+  <main>
+    <section class="intro">
+      <h2>Daily Energy Report</h2>
+      <p class="muted">Sample readings for 22 October 2026. Threshold: 100 kWh per building.</p>
+    </section>
+
+    <section class="grid" id="buildingGrid"></section>
+
+    <section class="summary">
+      <div>
+        <span class="muted">Total Campus Consumption</span>
+        <strong id="totalUsage">--</strong>
+        <span class="muted">kWh today</span>
+      </div>
+      <div>
+        <span class="muted">Highest Energy Usage</span>
+        <strong id="highestBuilding">--</strong>
+        <span class="muted" id="highestUsage"></span>
+      </div>
+      <div>
+        <span class="muted">Buildings Over 100 kWh</span>
+        <strong id="alertCount">--</strong>
+        <span class="muted">Need attention</span>
+      </div>
+    </section>
+  </main>
+
+  <footer>Smart Campus Energy Monitoring System | Sample data for demonstration</footer>
+
+  <script>
+    const buildings = [
+      { name: "Academic Block", usage: 125, target: 110 },
+      { name: "Library", usage: 85, target: 90 },
+      { name: "Hostel Block", usage: 145, target: 120 }
+    ];
+
+    const grid = document.getElementById("buildingGrid");
+
+    buildings.forEach(building => {
+      const exceeded = building.usage > 100;
+      const excess = building.usage - 100;
+      const targetDifference = building.usage - building.target;
+      const barWidth = Math.min(building.usage / 160 * 100, 100);
+
+      grid.innerHTML += `
+        <article class="card">
+          <h2>${building.name}</h2>
+          <div class="muted">Today's electricity consumption</div>
+          <div class="usage">${building.usage} kWh</div>
+          <div class="muted">Energy-saving target: ${building.target} kWh</div>
+          <div class="bar">
+            <div class="fill" style="width:${barWidth}%;background:${exceeded ? '#dc2626' : '#16a34a'}"></div>
+          </div>
+          <div class="muted">
+            ${targetDifference > 0
+              ? `${targetDifference} kWh above target`
+              : `${Math.abs(targetDifference)} kWh below target`}
+          </div>
+          ${exceeded
+            ? `<div class="warning">⚠ ALERT: Consumption exceeds 100 kWh by ${excess} kWh.</div>`
+            : `<div class="safe">✓ Consumption is within the 100 kWh limit.</div>`}
+        </article>
+      `;
+    });
+
+    const total = buildings.reduce((sum, b) => sum + b.usage, 0);
+    const highest = buildings.reduce((a, b) => a.usage > b.usage ? a : b);
+    const alertCount = buildings.filter(b => b.usage > 100).length;
+
+    document.getElementById("totalUsage").textContent = total;
+    document.getElementById("highestBuilding").textContent = highest.name;
+    document.getElementById("highestUsage").textContent = `${highest.usage} kWh today`;
+    document.getElementById("alertCount").textContent = alertCount;
+  </script>
+</body>
+</html>
