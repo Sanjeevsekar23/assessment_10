@@ -11,7 +11,7 @@ pipeline {
     }
 
     environment {
-        IMAGE = 'YOUR_DOCKERHUB_USERNAME/smart-campus-energy'
+        IMAGE = 'sanjeevsekar23/smart-campus-energy'
         DOCKER = 'C:\\Users\\Admin\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe'
         KUBECTL = 'C:\\Users\\Admin\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\kubectl.exe'
         KUBECONFIG = 'C:\\Users\\Admin\\.kube\\config'
